@@ -137,6 +137,12 @@ func getProviderSpecificAnnotations(annotations map[string]string) (endpoint.Pro
 				Name:  fmt.Sprintf("aws/%s", attr),
 				Value: v,
 			})
+		} else if strings.HasPrefix(k, "external-dns.alpha.kubernetes.io/bigip-") {
+			attr := strings.TrimPrefix(k, "external-dns.alpha.kubernetes.io/bigip-")
+			providerSpecificAnnotations = append(providerSpecificAnnotations, endpoint.ProviderSpecificProperty{
+				Name:  fmt.Sprintf("bigip/%s", attr),
+				Value: v,
+			})
 		}
 	}
 	return providerSpecificAnnotations, setIdentifier
