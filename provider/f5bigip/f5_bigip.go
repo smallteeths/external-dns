@@ -726,18 +726,28 @@ func (p F5BigipProvider) updateWideIP(endpoint *endpoint.Endpoint) error {
 		}
 	}
 	wideIP.Description = description
-	log.Infof("wideIP update: %v", wideIP)
+	deleteWideipAOptions := &bigip.APIRequest{
+		"delete",
+		fmt.Sprintf("/mgmt/tm/gtm/wideip/a/~%s~%s", wideIP.Partition, wideIP.Name),
+		"",
+		contentType,
+	}
+	err = p.delete(deleteWideipAOptions, wideIP.Name)
+	if err != nil {
+		return err
+	}
+	log.Infof("Create wideIP : %v", wideIP)
 	reqBody, err := json.Marshal(wideIP)
 	if err != nil {
 		return err
 	}
-	updateWideIpOptions := &bigip.APIRequest{
-		"put",
-		fmt.Sprintf("/mgmt/tm/gtm/wideip/a/~%s~%s", wideIP.Partition, wideIP.Name),
+	createWideIpOptions := &bigip.APIRequest{
+		"post",
+		"/mgmt/tm/gtm/wideip/a",
 		string(reqBody),
 		contentType,
 	}
-	_, err = p.client.APICall(updateWideIpOptions)
+	_, err = p.client.APICall(createWideIpOptions)
 	if err != nil {
 		return err
 	}
