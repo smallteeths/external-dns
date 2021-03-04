@@ -726,8 +726,8 @@ func (p F5BigipProvider) updateWideIP(endpoint *endpoint.Endpoint) error {
 		}
 	}
 	wideIP.Description = description
+	log.Infof("wideIP update: %v", wideIP)
 	reqBody, err := json.Marshal(wideIP)
-	log.Infof("wideIP update: %v", reqBody)
 	if err != nil {
 		return err
 	}
